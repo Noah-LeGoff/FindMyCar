@@ -1,31 +1,34 @@
+from models.listing import Listing
+from models.score import Score
+from models.search import Search
+
+from services.scoring.compatibility import CompatibilityScorer
+from services.scoring.opportunity import OpportunityScorer
+from services.scoring.weights import (
+    COMPATIBILITY_WEIGHT,
+    OPPORTUNITY_WEIGHT,
+)
+
+
 class ScoringService:
 
-    def score(self, listing):
+    def __init__(self) -> None:
+        self._compatibility = CompatibilityScorer()
+        self._opportunity = OpportunityScorer()
 
-        score = 0
+    def score(self, search: Search, listing: Listing) -> Score:
 
-        # Prix
-        if listing.price < 8000:
-            score += 30
+        compatibility = self._compatibility.compute(search, listing)
+        opportunity = self._opportunity.compute(search, listing)
 
-        # Kilométrage
-        if listing.mileage < 200000:
-            score += 20
+        total = (compatibility.score * COMPATIBILITY_WEIGHT + opportunity.compute * OPPORTUNITY_WEIGHT)
 
-        # Description
-        keywords = [
-            "factures",
-            "entretien",
-            "origine",
-            "première main",
-            "carnet"
-        ]
-
-        text = listing.description.lower()
-
-        for word in keywords:
-
-            if word in text:
-                score += 10
-
-        return min(score, 100)
+        return Score(
+            compatibility=compatibility.score,
+            opportunity=opportunity.score,
+            total=total,
+            breakdown=(
+                compatibility.breakdowns
+                + opportunity.breakdowns
+            ),
+        )
