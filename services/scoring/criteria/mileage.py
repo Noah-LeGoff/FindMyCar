@@ -7,15 +7,16 @@ from services.scoring.criteria.base import ScoringCriterion
 
 class MileageCriterion(ScoringCriterion):
 
+    DISPLAY_NAME = "Mileage"
+    MAX_POINTS = 15
+
     def evaluate(
         self,
         search: Search,
         listing: Listing,
     ) -> ScoreBreakdown:
 
-        return ScoreBreakdown(
-            criterion="Mileage",
+        return self._build_breakdown(
             points=0,
-            max_points=15,
-            reason="Not implemented yet",
+            reason="Not implemented yet.",
         )

@@ -7,15 +7,16 @@ from services.scoring.criteria.base import ScoringCriterion
 
 class YearCriterion(ScoringCriterion):
 
+    DISPLAY_NAME = "Year"
+    MAX_POINTS = 10
+
     def evaluate(
         self,
         search: Search,
         listing: Listing,
     ) -> ScoreBreakdown:
 
-        return ScoreBreakdown(
-            criterion="Year",
+        return self._build_breakdown(
             points=0,
-            max_points=10,
-            reason="Not implemented yet",
+            reason="Not implemented yet.",
         )
