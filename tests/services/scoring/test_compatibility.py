@@ -26,7 +26,7 @@ def test_score_returns_partial_score():
     assert isinstance(result, PartialScore)
 
 
-def test_score_is_zero_when_no_criterion_is_implemented():
+def test_score_equals_sum_of_breakdowns():
     scorer = CompatibilityScorer()
 
     search = Search(
@@ -43,7 +43,10 @@ def test_score_is_zero_when_no_criterion_is_implemented():
 
     result = scorer.compute(search, listing)
 
-    assert result.score == 0
+    assert result.score == sum(
+        breakdown.points
+        for breakdown in result.breakdowns
+    )
     assert len(result.breakdowns) == 3
 
 

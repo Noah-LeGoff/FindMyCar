@@ -1,88 +1,42 @@
 from models.listing import Listing
 from models.search import Search
 
-from services.scoring.criteria.base import ScoringCriterion
+from services.scoring.comparison_mode import ComparisonMode
+from services.scoring.criteria.numeric import NumericCriterion
 
 
-class PriceCriterion(ScoringCriterion):
-    """
-    Scores a listing according to the user's maximum budget.
-    """
-
+class PriceCriterion(NumericCriterion):
     DISPLAY_NAME = "Price"
 
     MAX_POINTS = 25
 
-    TOLERANCE = 0.05
-    MAX_OVER_BUDGET = 0.30
+    COMPARISON_MODE = ComparisonMode.MAXIMUM
 
-    def evaluate(
+    MISSING_VALUE_REASON = "Price unavailable."
+    MISSING_LIMIT_REASON = "No maximum budget specified."
+
+    WITHIN_LIMIT_REASON = "Price within budget."
+    WITHIN_TOLERANCE_REASON = "Price within tolerance"
+
+    EXCEEDS_LIMIT_REASON = "Price exceeds budget by"
+    EXCEEDS_MAX_REASON = "Price exceeds maximum accepted budget"
+
+    INVALID_VALUE_REASON = "Invalid listing price."
+
+    def _listing_value(
         self,
-        search: Search,
         listing: Listing,
     ):
-        """
-        Evaluates the listing price against the user's budget.
-        """
+        return listing.price
 
-        if listing.price is None:
-            return self._build_breakdown(
-                0,
-                "Price unavailable.",
-            )
-
-        if listing.price <= 1:
-            return self._build_breakdown(
-                0,
-                "Invalid listing price.",
-            )
-
-        if search.max_price is None:
-            return self._build_breakdown(
-                self.MAX_POINTS,
-                "No maximum budget specified.",
-            )
-
-        if listing.price <= search.max_price:
-            return self._build_breakdown(
-                self.MAX_POINTS,
-                "Price within budget.",
-            )
-
-        over_budget_ratio = (
-            listing.price - search.max_price
-        ) / search.max_price
-
-        if over_budget_ratio <= self.TOLERANCE:
-            return self._build_breakdown(
-                self.MAX_POINTS,
-                (
-                    "Price within tolerance "
-                    f"(+{self._format_ratio(over_budget_ratio)})."
-                ),
-            )
-
-        if over_budget_ratio >= self.MAX_OVER_BUDGET:
-            return self._build_breakdown(
-                0,
-                (
-                    "Price exceeds maximum accepted budget "
-                    f"(+{self._format_ratio(over_budget_ratio)})."
-                ),
-            )
-
-        normalized = (
-            over_budget_ratio - self.TOLERANCE
-        ) / (
-            self.MAX_OVER_BUDGET - self.TOLERANCE
-        )
-
-        points = self.MAX_POINTS * (1 - normalized)
-
-        return self._build_breakdown(
-            points,
-            (
-                "Price exceeds budget by "
-                f"{self._format_ratio(over_budget_ratio)}."
-            ),
-        )
+    def _search_limit(
+        self,
+        search: Search,
+    ):
+        return search.max_price
+    
+    def _is_valid_value(
+        self,
+        value: int |float,
+    ) -> bool:
+        return value > 1
