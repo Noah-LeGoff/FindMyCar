@@ -15,13 +15,13 @@ class DoorsCriterion(ExactMatchCriterion):
     MATCH_REASON = "Door count matches the search."
     MISMATCH_REASON = "Door count does not match the search."
 
-    def _search_value(
+    def _get_search_value(
         self,
         search: Search,
     ):
         return search.doors
 
-    def _listing_value(
+    def _get_listing_value(
         self,
         listing: Listing,
     ):

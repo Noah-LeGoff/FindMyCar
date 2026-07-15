@@ -22,7 +22,7 @@ class ExactMatchCriterion(ScoringCriterion):
         search: Search,
         listing: Listing,
     ):
-        search_value = self._search_value(search)
+        search_value = self._get_search_value(search)
 
         if search_value is None:
             return self._build_breakdown(
@@ -30,7 +30,7 @@ class ExactMatchCriterion(ScoringCriterion):
                 self.MISSING_SEARCH_REASON,
             )
 
-        listing_value = self._listing_value(listing)
+        listing_value = self._get_listing_value(listing)
 
         if listing_value is None:
             return self._build_breakdown(
@@ -50,14 +50,14 @@ class ExactMatchCriterion(ScoringCriterion):
         )
 
     @abstractmethod
-    def _search_value(
+    def _get_search_value(
         self,
         search: Search,
     ):
         raise NotImplementedError
 
     @abstractmethod
-    def _listing_value(
+    def _get_listing_value(
         self,
         listing: Listing,
     ):

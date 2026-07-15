@@ -1,7 +1,5 @@
 from services.scoring.criteria.doors import DoorsCriterion
 
-from models.enums import FuelType
-
 from tests.factories import make_listing, make_search
 
 

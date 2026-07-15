@@ -15,13 +15,13 @@ class FuelCriterion(ExactMatchCriterion):
     MATCH_REASON = "Fuel matches the search."
     MISMATCH_REASON = "Fuel does not match the search."
 
-    def _search_value(
+    def _get_search_value(
         self,
         search: Search,
     ):
         return search.fuel
 
-    def _listing_value(
+    def _get_listing_value(
         self,
         listing: Listing,
     ):
