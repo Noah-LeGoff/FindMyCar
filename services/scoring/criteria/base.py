@@ -49,3 +49,16 @@ class ScoringCriterion(ABC):
         """
 
         return f"{ratio * 100:.1f}%"
+    
+    def _format_days(
+        self,
+        days: int,
+    ) -> str:
+        """
+        Formats a duration expressed in days.
+        """
+
+        if days == 1:
+            return "1 day"
+
+        return f"{days} days"
