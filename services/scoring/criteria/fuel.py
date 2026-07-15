@@ -1,43 +1,28 @@
 from models.listing import Listing
 from models.search import Search
 
-from services.scoring.criteria.base import ScoringCriterion
+from services.scoring.criteria.exact_match import ExactMatchCriterion
 
 
-class FuelCriterion(ScoringCriterion):
-    """
-    Scores a listing based on its fuel type.
-    """
-
+class FuelCriterion(ExactMatchCriterion):
     DISPLAY_NAME = "Fuel"
 
     MAX_POINTS = 10
 
-    def evaluate(
+    MISSING_SEARCH_REASON = "No fuel specified."
+    MISSING_LISTING_REASON = "Fuel unavailable."
+
+    MATCH_REASON = "Fuel matches the search."
+    MISMATCH_REASON = "Fuel does not match the search."
+
+    def _search_value(
         self,
         search: Search,
+    ):
+        return search.fuel
+
+    def _listing_value(
+        self,
         listing: Listing,
     ):
-
-        if search.fuel is None:
-            return self._build_breakdown(
-                self.MAX_POINTS,
-                "No fuel specified.",
-            )
-
-        if listing.fuel is None:
-            return self._build_breakdown(
-                0,
-                "Fuel unavailable.",
-            )
-
-        if listing.fuel == search.fuel:
-            return self._build_breakdown(
-                self.MAX_POINTS,
-                "Fuel matches the search.",
-            )
-
-        return self._build_breakdown(
-            0,
-            "Fuel does not match the search.",
-        )
+        return listing.fuel

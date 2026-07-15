@@ -1,43 +1,28 @@
 from models.listing import Listing
 from models.search import Search
 
-from services.scoring.criteria.base import ScoringCriterion
+from services.scoring.criteria.exact_match import ExactMatchCriterion
 
 
-class GearboxCriterion(ScoringCriterion):
-    """
-    Scores a listing based on its gearbox.
-    """
-
+class GearboxCriterion(ExactMatchCriterion):
     DISPLAY_NAME = "Gearbox"
 
     MAX_POINTS = 10
 
-    def evaluate(
+    MISSING_SEARCH_REASON = "No gearbox specified."
+    MISSING_LISTING_REASON = "Gearbox unavailable."
+
+    MATCH_REASON = "Gearbox matches the search."
+    MISMATCH_REASON = "Gearbox does not match the search."
+
+    def _search_value(
         self,
         search: Search,
+    ):
+        return search.gearbox
+
+    def _listing_value(
+        self,
         listing: Listing,
     ):
-
-        if search.gearbox is None:
-            return self._build_breakdown(
-                self.MAX_POINTS,
-                "No gearbox specified.",
-            )
-
-        if listing.gearbox is None:
-            return self._build_breakdown(
-                0,
-                "Gearbox unavailable.",
-            )
-
-        if listing.gearbox == search.gearbox:
-            return self._build_breakdown(
-                self.MAX_POINTS,
-                "Gearbox matches the search.",
-            )
-
-        return self._build_breakdown(
-            0,
-            "Gearbox does not match the search.",
-        )
+        return listing.gearbox
