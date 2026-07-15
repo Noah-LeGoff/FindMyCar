@@ -14,6 +14,7 @@ def test_missing_publication_date_returns_zero():
     result = criterion.evaluate(
         make_search(),
         make_listing(published_at=None),
+        None,
     )
 
     assert result.points == 0
@@ -30,6 +31,7 @@ def test_listing_published_today_returns_max_points():
                 datetime.min.time(),
             )
         ),
+        None,
     )
 
     assert result.points == criterion.MAX_POINTS
@@ -46,6 +48,7 @@ def test_old_listing_returns_zero():
                 datetime.min.time(),
             )
         ),
+        None,
     )
 
     assert result.points == 0
@@ -62,6 +65,7 @@ def test_recent_listing_returns_partial_points():
                 datetime.min.time(),
             )
         ),
+        None,
     )
 
     assert 0 < result.points < criterion.MAX_POINTS

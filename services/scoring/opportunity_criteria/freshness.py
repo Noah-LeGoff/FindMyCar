@@ -1,6 +1,7 @@
 from datetime import date
 
 from models.listing import Listing
+from models.opportunity_context import OpportunityContext
 from models.search import Search
 
 from services.scoring.criteria.base import ScoringCriterion
@@ -27,6 +28,7 @@ class FreshnessCriterion(ScoringCriterion):
         self,
         search: Search,
         listing: Listing,
+        context: OpportunityContext,
     ):
         if listing.published_at is None:
             return self._build_breakdown(

@@ -16,7 +16,7 @@ def test_compute_returns_partial_score():
     assert isinstance(result, PartialScore)
 
 
-def test_empty_criteria_returns_zero_score():
+def test_compute_returns_zero_score_when_no_points_are_awarded():
     scorer = OpportunityScorer()
 
     result = scorer.compute(
@@ -27,7 +27,7 @@ def test_empty_criteria_returns_zero_score():
     assert result.score == 0
 
 
-def test_empty_criteria_returns_no_breakdowns():
+def test_compute_returns_all_criterion_breakdowns():
     scorer = OpportunityScorer()
 
     result = scorer.compute(
@@ -35,4 +35,12 @@ def test_empty_criteria_returns_no_breakdowns():
         make_listing(),
     )
 
-    assert result.breakdowns == []
+    names = [
+        breakdown.criterion
+        for breakdown in result.breakdowns
+    ]
+
+    assert names == [
+        "Freshness",
+        "Price Opportunity",
+    ]

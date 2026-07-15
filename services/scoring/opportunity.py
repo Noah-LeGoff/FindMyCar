@@ -1,8 +1,9 @@
 from models.listing import Listing
+from models.opportunity_context import OpportunityContext
 from models.partial_score import PartialScore
 from models.search import Search
 
-from services.scoring.criteria import OPPORTUNITY_CRITERIA
+from services.scoring.opportunity_criteria import OPPORTUNITY_CRITERIA
 
 
 class OpportunityScorer:
@@ -14,13 +15,20 @@ class OpportunityScorer:
         self,
         search: Search,
         listing: Listing,
+        context: OpportunityContext | None = None,
     ) -> PartialScore:
         """
         Computes the opportunity score.
         """
 
+        context = context or OpportunityContext()
+
         breakdowns = [
-            criterion.evaluate(search, listing)
+            criterion.evaluate(
+                search,
+                listing,
+                context,
+            )
             for criterion in OPPORTUNITY_CRITERIA
         ]
 

@@ -13,6 +13,3 @@ COMPATIBILITY_CRITERIA = (
     GearboxCriterion(),
     DoorsCriterion()
 )
-
-# Opportunity criteria are introduced progressively.
-OPPORTUNITY_CRITERIA = []

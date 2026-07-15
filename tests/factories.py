@@ -1,5 +1,6 @@
 from models.enums import FuelType, GearboxType
 from models.listing import Listing
+from models.opportunity_context import OpportunityContext
 from models.search import Search
 
 
@@ -66,3 +67,20 @@ def make_listing(**kwargs) -> Listing:
     data.update(kwargs)
 
     return Listing(**data)
+
+
+def make_market(
+    *prices: int,
+) -> OpportunityContext:
+    """
+    Creates an OpportunityContext populated with comparable listings.
+    """
+
+    listings = [
+        make_listing(price=price)
+        for price in prices
+    ]
+
+    return OpportunityContext(
+        comparable_listings=listings,
+    )
