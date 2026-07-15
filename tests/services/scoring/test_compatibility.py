@@ -47,11 +47,11 @@ def test_score_equals_sum_of_breakdowns():
         breakdown.points
         for breakdown in result.breakdowns
     )
-    assert len(result.breakdowns) == 3
+    assert len(result.breakdowns) == 4
 
 
 def test_compatibility_contains_three_criteria():
-    assert len(COMPATIBILITY_CRITERIA) == 3
+    assert len(COMPATIBILITY_CRITERIA) == 4
 
 
 def test_all_breakdowns_are_returned():
