@@ -43,4 +43,5 @@ def test_compute_returns_all_criterion_breakdowns():
     assert names == [
         "Freshness",
         "Price Opportunity",
+        "Rarity",
     ]
