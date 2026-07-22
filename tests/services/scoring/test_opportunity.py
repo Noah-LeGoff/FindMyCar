@@ -44,4 +44,5 @@ def test_compute_returns_all_criterion_breakdowns():
         "Freshness",
         "Price Opportunity",
         "Rarity",
+        "Maintenance",
     ]
