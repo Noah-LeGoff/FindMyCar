@@ -166,7 +166,7 @@ A configurable minimum sample size prevents unreliable statistics.
 
 Example:
 
-```
+```python
 MIN_SAMPLE_SIZE = 10
 ```
 
