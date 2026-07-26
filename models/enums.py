@@ -15,3 +15,12 @@ class GearboxType(Enum):
     MANUAL = "manual"
     AUTOMATIC = "automatic"
     SEMI_AUTOMATIC = "semi_automatic"
+
+
+class Recommendation(Enum):
+    EXCEPTIONAL = "Exceptional choice"
+    EXCELLENT = "Excellent choice"
+    VERY_INTERESTING = "Very interesting"
+    WORTH_CONSIDERING = "Worth considering"
+    LOW_INTEREST = "Low interest"
+    AVOID = "Avoid"
