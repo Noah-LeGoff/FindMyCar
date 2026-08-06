@@ -19,3 +19,16 @@ Testing
 - Full unit test suite
 - Integration tests
 - Business rule tests
+
+Technical Debt
+
+TD-001
+
+Merge ScoreBreakdown into FactorScore.
+
+Reason:
+The new scoring architecture supersedes the previous compatibility
+breakdown model.
+
+Target:
+After Sprint 3 completion.

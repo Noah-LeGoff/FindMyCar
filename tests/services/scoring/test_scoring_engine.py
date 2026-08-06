@@ -1,95 +1,102 @@
-from models.final_score import FinalScore
-from models.scored_listing import ScoredListing
+from unittest.mock import Mock, patch
+
+from models.analysis.analysis_bundle import AnalysisBundle
+from models.score.factor_score import FactorScore
+from models.score.score import Score
 
 from services.scoring.scoring_engine import ScoringEngine
+from services.scoring.factors.score_factor import ScoreFactor
 
-from tests.factories import make_listing, make_search
+
+def make_factor(name: str):
+    factor = Mock(spec=ScoreFactor)
+    factor.compute.return_value = FactorScore(
+        name=name,
+        score=50.0,
+        explanation="Test",
+    )
+    return factor
 
 
-def test_returns_final_score():
-    engine = ScoringEngine()
+def test_calls_every_factor():
+    bundle = Mock(spec=AnalysisBundle)
 
-    result = engine.compute(
-        make_search(),
-        make_listing(),
+    factors = (
+        make_factor("Price"),
+        make_factor("Reliability"),
+        make_factor("Maintenance"),
+        make_factor("Safety"),
+        make_factor("AI"),
     )
 
-    assert isinstance(
-        result,
-        FinalScore,
+    engine = ScoringEngine(factors)
+
+    with patch.object(
+        Score,
+        "from_factors",
+        return_value=Mock(spec=Score),
+    ):
+        engine.compute(bundle)
+
+    for factor in factors:
+        factor.compute.assert_called_once_with(bundle)
+
+
+def test_builds_score_from_factor_scores():
+    bundle = Mock(spec=AnalysisBundle)
+
+    factors = (
+        make_factor("Price"),
+        make_factor("Reliability"),
+        make_factor("Maintenance"),
+        make_factor("Safety"),
+        make_factor("AI"),
     )
 
-
-def test_score_is_between_zero_and_one_hundred():
-    engine = ScoringEngine()
-
-    result = engine.compute(
-        make_search(),
-        make_listing(),
-    )
-
-    assert 0 <= result.total <= 100
-
-
-def test_preserves_breakdowns():
-    engine = ScoringEngine()
-
-    result = engine.compute(
-        make_search(),
-        make_listing(),
-    )
-
-    assert result.compatibility_breakdowns is not None
-    assert result.opportunity_breakdowns is not None
-
-
-def test_compute_all_returns_scored_listings():
-    engine = ScoringEngine()
-
-    listings = [
-        make_listing(),
-        make_listing(),
-        make_listing(),
+    expected_scores = [
+        factor.compute.return_value
+        for factor in factors
     ]
 
-    result = engine.compute_all(
-        make_search(),
-        listings,
-    )
+    engine = ScoringEngine(factors)
 
-    assert len(result) == 3
+    with patch.object(
+        Score,
+        "from_factors",
+        return_value=Mock(spec=Score),
+    ) as from_factors:
+        engine.compute(bundle)
 
-    assert all(
-        isinstance(
-            scored.score,
-            FinalScore,
-        )
-        for scored in result
-    )
+    from_factors.assert_called_once_with(expected_scores)
 
 
-def test_compute_all_returns_scored_listing_objects():
-    engine = ScoringEngine()
+def test_returns_score():
+    bundle = Mock(spec=AnalysisBundle)
 
-    result = engine.compute_all(
-        make_search(),
-        [
-            make_listing(),
-        ],
-    )
+    expected_score = Mock(spec=Score)
 
-    assert isinstance(
-        result[0],
-        ScoredListing,
-    )
+    engine = ScoringEngine(())
+
+    with patch.object(
+        Score,
+        "from_factors",
+        return_value=expected_score,
+    ):
+        result = engine.compute(bundle)
+
+    assert result is expected_score
 
 
-def test_compute_all_empty_list():
-    engine = ScoringEngine()
+def test_supports_empty_factor_collection():
+    bundle = Mock(spec=AnalysisBundle)
 
-    result = engine.compute_all(
-        make_search(),
-        [],
-    )
+    engine = ScoringEngine(())
 
-    assert result == []
+    with patch.object(
+        Score,
+        "from_factors",
+        return_value=Mock(spec=Score),
+    ) as from_factors:
+        engine.compute(bundle)
+
+    from_factors.assert_called_once_with([])

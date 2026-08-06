@@ -1,6 +1,7 @@
 from models.enums import FuelType, GearboxType
 from models.listing import Listing
 from models.opportunity_context import OpportunityContext
+from models.score.score import Score
 from models.search import Search
 
 
@@ -83,4 +84,14 @@ def make_market(
 
     return OpportunityContext(
         comparable_listings=listings,
+    )
+
+
+def make_score(
+    compatibility: float = 0.0,
+    opportunity: float = 0.0,
+):
+    return Score(
+        compatibility=compatibility,
+        opportunity=opportunity,
     )

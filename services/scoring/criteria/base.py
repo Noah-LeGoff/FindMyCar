@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
 from models.listing import Listing
-from models.score_breakdown import ScoreBreakdown
+from models.score.score_breakdown import ScoreBreakdown
 from models.search import Search
 
 

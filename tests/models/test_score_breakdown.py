@@ -1,4 +1,4 @@
-from models.score_breakdown import ScoreBreakdown
+from models.score.score_breakdown import ScoreBreakdown
 
 
 def test_create_score_breakdown():

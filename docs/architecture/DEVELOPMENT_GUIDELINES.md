@@ -14,6 +14,7 @@ Nous privilégions une architecture claire et facile à maintenir plutôt que la
 
 Le code peut être réécrit.
 L’architecture doit rester stable.
+Aucun moteur ne doit dépendre d'un moteur situé après lui dans le pipeline.
 
 ---
 

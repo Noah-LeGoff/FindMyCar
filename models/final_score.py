@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from models.score_breakdown import ScoreBreakdown
+from models.score.score_breakdown import ScoreBreakdown
 
 from models.enums import Recommendation
 

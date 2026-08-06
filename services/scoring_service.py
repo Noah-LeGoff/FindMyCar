@@ -1,5 +1,5 @@
 from models.listing import Listing
-from models.score import Score
+from models.score.score import Score
 from models.search import Search
 
 from services.scoring.compatibility import CompatibilityScorer
